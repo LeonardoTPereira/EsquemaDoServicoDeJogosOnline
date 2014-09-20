@@ -4,6 +4,8 @@
  */
 package esquemadejogos;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -26,11 +29,14 @@ public class DBFuncionalidades {
     Connection connection;
     Statement stmt;
     Statement stmt2;
+    Statement stmt3;
     ResultSet rs;
     ResultSet rsColunms;
     ResultSet rsContent;
+    ResultSet rsPK;
     JTextArea jtAreaDeStatus;
     Vector<String> columnNames;
+    Vector<String> pkColumns;
     Vector<Vector<String>> tableData;
     
     public DBFuncionalidades(JTextArea jtaTextArea){
@@ -86,35 +92,59 @@ public class DBFuncionalidades {
         JTable jtSelect = null;
         columnNames = new Vector();
         tableData = new Vector<>();
+        pkColumns = new Vector();
         System.out.println(tableName);
         try{
             /*SELEÇÃO*/
             stmt = connection.createStatement();
             stmt2 = connection.createStatement();
+            stmt3 = connection.createStatement();
             rsContent = stmt.executeQuery("SELECT * FROM "+tableName);
+            
+            /*Return the name of the columns that are primary keys*/
+            rsPK = stmt3.executeQuery("SELECT cols.table_name, cols.column_name, cols.position, cons.status, cons.owner "
+                    + "FROM all_constraints cons, all_cons_columns cols "
+                    + "WHERE cols.table_name = '"+tableName+"' "
+                    + "AND cons.constraint_type = 'P' "
+                    + "AND cons.constraint_name = cols.constraint_name "
+                    + "AND cons.owner = cols.owner "
+                    + "ORDER BY cols.table_name, cols.position");
+            /*Return the column names from the table*/
             rsColunms = stmt2.executeQuery("SELECT COLUMN_NAME from USER_TAB_COLUMNS where table_name = '" + tableName + "'");
+            /*Save the results in vectors*/
+            while (rsPK.next()) {
+                pkColumns.add(rsPK.getString("COLUMN_NAME"));
+            }
             while (rsColunms.next()) {
-                System.out.print(rsColunms.getString("COLUMN_NAME")+ " - ");
                 columnNames.add(rsColunms.getString("COLUMN_NAME"));
             }
-            System.out.println("");
             int j = 0;
             while (rsContent.next()) {
                 tableData.add(new Vector());
                 for(int i = 0; i < columnNames.size(); i++)
                 {
-                    System.out.print(rsContent.getString(columnNames.get(i))+" - ");
                     tableData.get(j).add(rsContent.getString(columnNames.get(i)));
                 }
-                System.out.println("");
                 j++;
             }
-            jtSelect = new JTable();
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        jtSelect = new JTable(tableData, columnNames);
+        /*Creates a new JTable with the information from the select*/
+        jtSelect = new JTable(tableData, columnNames){
+            /*This method changes the background color from the columns that are primary keys*/
+            public Component prepareRenderer( TableCellRenderer r, int rw, int col)
+            {
+            Component c = super.prepareRenderer(r, rw, col);
+            c.setBackground(Color.WHITE);
+            if(pkColumns.contains(columnNames.get(col)))
+            {
+                c.setBackground(Color.GREEN);
+            }  
+            return c;
+            }
+        };
         return jtSelect;
     }
     

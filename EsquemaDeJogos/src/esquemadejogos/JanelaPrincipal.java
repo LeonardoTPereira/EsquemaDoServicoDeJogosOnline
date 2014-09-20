@@ -7,6 +7,8 @@ package esquemadejogos;
 
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -25,12 +27,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneLayout;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-/**
- *
- * @author junio
- */
 public class JanelaPrincipal {
 
     JFrame j;
@@ -44,6 +43,7 @@ public class JanelaPrincipal {
     JTable selectTable;
     JPanel pPainelDeInsecaoDeDados;
     DBFuncionalidades bd;
+    
 
     private void createSelectTable(String table)
     {
