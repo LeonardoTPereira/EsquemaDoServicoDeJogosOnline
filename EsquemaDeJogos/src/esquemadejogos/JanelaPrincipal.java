@@ -11,6 +11,10 @@ import java.awt.ComponentOrientation;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +42,70 @@ public class JanelaPrincipal {
     JPanel pPainelDeInsecaoDeDados;
     DBFuncionalidades bd;
 
+    private void createSelectTable(String table)
+    {
+        bd.preencherTableSelect(table);
+        /*Table de exibição*/
+        /*
+         * Pegar nome de todas as tuplas da tabela selecionada
+         * 
+         * 
+         *  nColunas = getNColunas();
+         */
+        /*SELEÇÃO*/
+            
+        /*int nColunas = 3;
+        String colunas[] = new String[nColunas];
+        */
+        /*
+         * for(int i = 0; i < nColunas; i++)
+         * {
+         *      colunas[i] = getNomeColuna(i);
+         * }
+         */
+        /*colunas[0] = "Coluna1";
+        colunas[1] = "Coluna2";
+        colunas[2] = "Coluna3";
+        */
+        /*
+         * nTuplas = getNTuplas();
+         */
+        /*int nTuplas = 4;
+        String dados[][] = new String[nTuplas][nColunas];
+        */
+        /*
+         * for(int i = 0; i < nColunas; i++)
+         * {
+         *      for(int j = 0; j < nTuplas; j++)
+         *      {
+         *          dados[i][j] = getTupla(i, table[j]);
+         *      }
+         * }
+         */
+        /*
+        dados[0][0] = "d00";
+        dados[0][1] = "d10";
+        dados[0][2] = "d20";
+        dados[1][0] = "d10";
+        dados[1][1] = "d11";
+        dados[1][2] = "d21";
+        dados[2][0] = "d20";
+        dados[2][1] = "d12";
+        dados[2][2] = "d22";
+        dados[3][0] = "d30";
+        dados[3][1] = "d13";
+        dados[3][2] = "d23";
+        */
+        /*
+         * Scroll vertical mas nao horizontal!!!
+         * Colocar nomes das colunas
+         * Marcar atributo chave com cor diferente
+         * 
+         */
+        /*jt = new JTable(dados, colunas);
+        pPainelDeExibicaoDeDados.add(jt);*/
+    }
+    
     public void ExibeJanelaPrincipal() {
         /*Janela*/
         j = new JFrame("ICMC-USP - SCC0541 - Pratica 5");
@@ -67,61 +135,10 @@ public class JanelaPrincipal {
         pPainelDeExibicaoDeDados.setLayout(new GridLayout(1, 1));
         tabbedPane.add(pPainelDeExibicaoDeDados, "Exibição");
         
-        /*Table de exibição*/
-        /*
-         * Pegar nome de todas as tuplas da tabela selecionada
-         * 
-         * 
-         *  nColunas = getNColunas();
-         */
-        int nColunas = 3;
-        String colunas[] = new String[nColunas];
-        /*
-         * for(int i = 0; i < nColunas; i++)
-         * {
-         *      colunas[i] = getNomeColuna(i);
-         * }
-         */
-        colunas[0] = "Coluna1";
-        colunas[1] = "Coluna2";
-        colunas[2] = "Coluna3";
-        /*
-         * nTuplas = getNTuplas();
-         */
-        int nTuplas = 4;
-        String dados[][] = new String[nTuplas][nColunas];
-        /*
-         * for(int i = 0; i < nColunas; i++)
-         * {
-         *      for(int j = 0; j < nTuplas; j++)
-         *      {
-         *          dados[i][j] = getTupla(i, table[j]);
-         *      }
-         * }
-         */
-        dados[0][0] = "d00";
-        dados[0][1] = "d10";
-        dados[0][2] = "d20";
-        dados[1][0] = "d10";
-        dados[1][1] = "d11";
-        dados[1][2] = "d21";
-        dados[2][0] = "d20";
-        dados[2][1] = "d12";
-        dados[2][2] = "d22";
-        dados[3][0] = "d30";
-        dados[3][1] = "d13";
-        dados[3][2] = "d23";
-        /*
-         * Scroll vertical mas nao horizontal!!!
-         * Colocar nomes das colunas
-         * Marcar atributo chave com cor diferente
-         * 
-         */
-        jt = new JTable(dados, colunas);
-        pPainelDeExibicaoDeDados.add(jt);
 
         /*Tab de inserção*/
         pPainelDeInsecaoDeDados = new JPanel();
+        int nColunas = 3;
         pPainelDeInsecaoDeDados.setLayout(new GridLayout(nColunas, 2));
         /*
          * Encontrar tuplas da tabela
@@ -151,6 +168,8 @@ public class JanelaPrincipal {
         if (bd.conectar()) {
             bd.pegarNomesDeTabelas(jc);
         }
+        /*Cria a JTable com os dados resultantes do select na tabela escolhida*/
+        createSelectTable((String) jc.getItemAt(0));
     }
 
     private void DefineEventos() {
@@ -159,6 +178,8 @@ public class JanelaPrincipal {
             public void actionPerformed(ActionEvent e) {
                 JComboBox jcTemp = (JComboBox) e.getSource();
                 jtAreaDeStatus.setText((String) jcTemp.getSelectedItem());
+                /*Cria a JTable com os dados resultantes do select na tabela escolhida*/
+                createSelectTable((String) jcTemp.getSelectedItem());
             }
         });
     }
