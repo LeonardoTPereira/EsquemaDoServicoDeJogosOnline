@@ -4,6 +4,7 @@
  */
 package aula05.oracleinterface;
 
+import esquemadejogos.JanelaPrincipal;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
