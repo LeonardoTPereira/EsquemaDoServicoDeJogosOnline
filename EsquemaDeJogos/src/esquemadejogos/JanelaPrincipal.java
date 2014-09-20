@@ -50,64 +50,6 @@ public class JanelaPrincipal {
         if(selectTable != null)
             pPainelDeExibicaoDeDados.remove(selectTable);
         selectTable = bd.preencherTableSelect(table);
-        /*Table de exibição*/
-        /*
-         * Pegar nome de todas as tuplas da tabela selecionada
-         * 
-         * 
-         *  nColunas = getNColunas();
-         */
-        /*SELEÇÃO*/
-            
-        /*int nColunas = 3;
-        String colunas[] = new String[nColunas];
-        */
-        /*
-         * for(int i = 0; i < nColunas; i++)
-         * {
-         *      colunas[i] = getNomeColuna(i);
-         * }
-         */
-        /*colunas[0] = "Coluna1";
-        colunas[1] = "Coluna2";
-        colunas[2] = "Coluna3";
-        */
-        /*
-         * nTuplas = getNTuplas();
-         */
-        /*int nTuplas = 4;
-        String dados[][] = new String[nTuplas][nColunas];
-        */
-        /*
-         * for(int i = 0; i < nColunas; i++)
-         * {
-         *      for(int j = 0; j < nTuplas; j++)
-         *      {
-         *          dados[i][j] = getTupla(i, table[j]);
-         *      }
-         * }
-         */
-        /*
-        dados[0][0] = "d00";
-        dados[0][1] = "d10";
-        dados[0][2] = "d20";
-        dados[1][0] = "d10";
-        dados[1][1] = "d11";
-        dados[1][2] = "d21";
-        dados[2][0] = "d20";
-        dados[2][1] = "d12";
-        dados[2][2] = "d22";
-        dados[3][0] = "d30";
-        dados[3][1] = "d13";
-        dados[3][2] = "d23";
-        */
-        /*
-         * Scroll vertical mas nao horizontal!!!
-         * Colocar nomes das colunas
-         * Marcar atributo chave com cor diferente
-         * 
-         */
-        /*jt = new JTable(dados, colunas);*/
         pPainelDeExibicaoDeDados.setViewportView(selectTable);
         //Metodo anterior, nao funciona com ScrollPaneLayout por algum motivo
         //pPainelDeExibicaoDeDados.add(selectTable);
@@ -185,7 +127,12 @@ public class JanelaPrincipal {
                 new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JComboBox jcTemp = (JComboBox) e.getSource();
-                jtAreaDeStatus.setText((String) jcTemp.getSelectedItem());
+                String metadata;
+                /*Cria string com metadados sobre a tabela*/
+                metadata = (String) jcTemp.getSelectedItem() + "\n";
+                metadata += bd.getMetaData((String) jcTemp.getSelectedItem());
+                jtAreaDeStatus.setText(metadata);
+                
                 /*Cria a JTable com os dados resultantes do select na tabela escolhida*/
                 createSelectTable((String) jcTemp.getSelectedItem());
             }

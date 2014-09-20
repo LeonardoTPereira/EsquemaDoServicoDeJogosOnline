@@ -43,6 +43,29 @@ public class DBFuncionalidades {
         jtAreaDeStatus = jtaTextArea;
     }
     
+    public String getMetaData(String tableName)
+    {
+        String metaData = new String();
+        Statement st;
+        ResultSet rsmd;
+        try
+        {
+            st = connection.createStatement();
+            /*Search for the metadata and adds it to the string to be shown in the lower part of the window*/
+            rsmd = st.executeQuery("SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, NUM_NULLS, NUM_DISTINCT, "
+                    + "DATA_DEFAULT, COLUMN_ID, NULLABLE from USER_TAB_COLUMNS where table_name = '" + tableName + "'");
+                while (rsmd.next()) {
+                    metaData += "ID ="+rsmd.getString("COLUMN_ID")+" |NAME ="+rsmd.getString("COLUMN_NAME") 
+                        +" |TYPE ="+rsmd.getString("DATA_TYPE")+" |LENGTH ="+rsmd.getString("DATA_LENGTH")+" |NULL? ="+rsmd.getString("NULLABLE")
+                            + " |DEFAULT =" + rsmd.getString("DATA_DEFAULT")+" |#NULLS = " + rsmd.getString("NUM_NULLS")+" |#DISTINCT = "+rsmd.getString("NUM_DISTINCT")+"\n";
+                }
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return metaData;
+    }
+    
     public boolean conectar(){       
         /*
          * Fazer dinamicamente isto para qualquer usuario
