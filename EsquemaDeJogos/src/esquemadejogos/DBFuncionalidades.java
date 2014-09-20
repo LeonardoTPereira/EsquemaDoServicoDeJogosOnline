@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
@@ -29,7 +30,8 @@ public class DBFuncionalidades {
     ResultSet rsColunms;
     ResultSet rsContent;
     JTextArea jtAreaDeStatus;
-    ArrayList<String> columnNames;
+    Vector<String> columnNames;
+    Vector<Vector<String>> tableData;
     
     public DBFuncionalidades(JTextArea jtaTextArea){
         jtAreaDeStatus = jtaTextArea;
@@ -82,7 +84,8 @@ public class DBFuncionalidades {
     {
         
         JTable jtSelect = null;
-        columnNames = new ArrayList();
+        columnNames = new Vector();
+        tableData = new Vector<>();
         System.out.println(tableName);
         try{
             /*SELEÇÃO*/
@@ -95,17 +98,23 @@ public class DBFuncionalidades {
                 columnNames.add(rsColunms.getString("COLUMN_NAME"));
             }
             System.out.println("");
+            int j = 0;
             while (rsContent.next()) {
+                tableData.add(new Vector());
                 for(int i = 0; i < columnNames.size(); i++)
                 {
                     System.out.print(rsContent.getString(columnNames.get(i))+" - ");
+                    tableData.get(j).add(rsContent.getString(columnNames.get(i)));
                 }
                 System.out.println("");
+                j++;
             }
+            jtSelect = new JTable();
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+        jtSelect = new JTable(tableData, columnNames);
         return jtSelect;
     }
     

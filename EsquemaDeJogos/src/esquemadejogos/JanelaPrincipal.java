@@ -19,10 +19,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.table.TableColumn;
 
 /**
@@ -37,14 +39,17 @@ public class JanelaPrincipal {
     JComboBox jc;
     JTextArea jtAreaDeStatus;
     JTabbedPane tabbedPane;
-    JPanel pPainelDeExibicaoDeDados;
+    JScrollPane pPainelDeExibicaoDeDados = null;
     JTable jt;
+    JTable selectTable;
     JPanel pPainelDeInsecaoDeDados;
     DBFuncionalidades bd;
 
     private void createSelectTable(String table)
     {
-        bd.preencherTableSelect(table);
+        if(selectTable != null)
+            pPainelDeExibicaoDeDados.remove(selectTable);
+        selectTable = bd.preencherTableSelect(table);
         /*Table de exibição*/
         /*
          * Pegar nome de todas as tuplas da tabela selecionada
@@ -102,8 +107,10 @@ public class JanelaPrincipal {
          * Marcar atributo chave com cor diferente
          * 
          */
-        /*jt = new JTable(dados, colunas);
-        pPainelDeExibicaoDeDados.add(jt);*/
+        /*jt = new JTable(dados, colunas);*/
+        pPainelDeExibicaoDeDados.setViewportView(selectTable);
+        //Metodo anterior, nao funciona com ScrollPaneLayout por algum motivo
+        //pPainelDeExibicaoDeDados.add(selectTable);
     }
     
     public void ExibeJanelaPrincipal() {
@@ -131,8 +138,9 @@ public class JanelaPrincipal {
         j.add(tabbedPane, BorderLayout.CENTER);
 
         /*Tab de exibicao*/
-        pPainelDeExibicaoDeDados = new JPanel();
-        pPainelDeExibicaoDeDados.setLayout(new GridLayout(1, 1));
+        /*Mudada para JScrollPane por JPanel nao exibir o titulo das JTables por algum motivo*/
+        pPainelDeExibicaoDeDados = new JScrollPane();
+        pPainelDeExibicaoDeDados.setLayout(new ScrollPaneLayout());
         tabbedPane.add(pPainelDeExibicaoDeDados, "Exibição");
         
 
