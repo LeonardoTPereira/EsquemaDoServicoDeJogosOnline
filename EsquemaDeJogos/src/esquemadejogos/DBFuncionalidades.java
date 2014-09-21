@@ -42,6 +42,33 @@ public class DBFuncionalidades {
     public DBFuncionalidades(JTextArea jtaTextArea){
         jtAreaDeStatus = jtaTextArea;
     }
+
+    public DBFuncionalidades() {
+        
+    }
+    
+    public void getDDL()
+    {
+        Statement s;
+        ResultSet rsddl;
+        try
+        {
+            System.out.println("ddl:");
+            s = connection.createStatement();
+            /*
+            s.executeQuery("EXECUTE dbms_metadata.set_transform_param(dbms_metadata.session_transform,'STORAGE',false");
+            s.executeQuery("EXECUTE dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SEGMENT_ATTRIBUTES',false");
+            s.executeQuery("EXECUTE dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SQLTERMINATOR',true)");*/
+            rsddl = s.executeQuery("select DBMS_METADATA.GET_DDL(object_type,object_name) from user_objects where object_type = 'TABLE'");
+            while(rsddl.next()){
+                System.out.println(rsddl.getString(1));
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+    }
     
     public String getMetaData(String tableName)
     {
