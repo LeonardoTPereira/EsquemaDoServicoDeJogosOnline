@@ -6,6 +6,8 @@ package esquemadejogos;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -19,7 +21,10 @@ import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -50,18 +55,37 @@ public class DBFuncionalidades {
     public void getDDL()
     {
         Statement s;
+        CallableStatement cs;
         ResultSet rsddl;
         try
         {
-            System.out.println("ddl:");
+            cs = connection.prepareCall("{ call dbms_metadata.set_transform_param(dbms_metadata.session_transform,'STORAGE', false) }");
+            cs.execute();
+            cs = connection.prepareCall("{ call dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SEGMENT_ATTRIBUTES',false) }");
+            cs.execute();
+            cs = connection.prepareCall("{ call dbms_metadata.set_transform_param(dbms_metadata.session_transform,'REF_CONSTRAINTS',false) }");
+            cs.execute();
+            cs = connection.prepareCall("{ call dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SQLTERMINATOR',true) }");
+            cs.execute();
             s = connection.createStatement();
-            /*
-            s.executeQuery("EXECUTE dbms_metadata.set_transform_param(dbms_metadata.session_transform,'STORAGE',false");
-            s.executeQuery("EXECUTE dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SEGMENT_ATTRIBUTES',false");
-            s.executeQuery("EXECUTE dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SQLTERMINATOR',true)");*/
             rsddl = s.executeQuery("select DBMS_METADATA.GET_DDL(object_type,object_name) from user_objects where object_type = 'TABLE'");
             while(rsddl.next()){
                 System.out.println(rsddl.getString(1));
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        ResultSet rsFKS;
+        try
+        {
+            cs = connection.prepareCall("{ call dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SQLTERMINATOR',true) }");
+            cs.execute();
+            s = connection.createStatement();
+            rsFKS = s.executeQuery("select dbms_metadata.get_ddl('REF_CONSTRAINT', c.constraint_name) from user_constraints c where c.constraint_type = 'R'");
+            while(rsFKS.next()){
+                System.out.println(rsFKS.getString(1));
             }
         }
         catch(Exception ex)
@@ -100,10 +124,11 @@ public class DBFuncionalidades {
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("Enter your username: ");
-        String username = scanner.nextLine();
-        
+        //String username = scanner.nextLine();
+        String username = "7573621";
         System.out.println("Enter your password: ");
-        String password = scanner.nextLine();
+        //String password = scanner.nextLine();
+        String password = "19sword99";
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             connection = DriverManager.getConnection(
@@ -191,7 +216,7 @@ public class DBFuncionalidades {
             if(pkColumns.contains(columnNames.get(col)))
             {
                 c.setBackground(Color.GREEN);
-            }  
+            }
             return c;
             }
         };

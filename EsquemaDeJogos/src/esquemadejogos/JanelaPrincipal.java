@@ -135,7 +135,7 @@ public class JanelaPrincipal {
                 
                 /*Cria a JTable com os dados resultantes do select na tabela escolhida*/
                 createSelectTable((String) jcTemp.getSelectedItem());
-                bd.getDDL();
+                
             }
         });
     }
